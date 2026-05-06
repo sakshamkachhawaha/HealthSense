@@ -7,15 +7,13 @@ import Profile from './components/Profile'
 
 
 
-
-
 const App = () => {
   return (
     <div className='flex flex-col h-screen w-screen'>
       <Header />
       <div className='flex flex-row h-full w-full'>
         <Sidebar />
-        <Reports />
+        <Profile />
       </div>
     </div>
   )
