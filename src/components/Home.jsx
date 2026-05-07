@@ -14,7 +14,7 @@ import { SportShoe } from 'lucide-react';
 
 const Home = () => {
   return (
-    <div className='bg-gray-50 w-full h-full p-8'>
+    <div className='bg-white w-full h-full p-8'>
         <div className='bg-linear-to-br from-[#9cc6a5] to-[#bee8dc] rounded-3xl p-12'>
           <p className='text-[rgb(63,101,74)]'>GOOD MORNING</p>
           <h1 className='text-4xl font-serif mt-2 text-gray-800 font-thin'>How are you feeling today?</h1>
@@ -87,11 +87,11 @@ const Home = () => {
 
 
 
-        <div className='mt-11'>
+        <div className='mt-11 pb-9'>
           <div className='flex items-center justify-between'>
             <h1 className='text-3xl font-serif font-thin p-1'>Daily Wellness</h1>
           </div>
-          <div className='flex flex-row gap-4'>
+          <div className='flex flex-row gap-4 '>
             <div className='bg-[#e9ebe5] w-70 rounded-3xl p-5 mt-4 gap-1 flex flex-col hover:border duration-700 transition-all border-[#43664D] cursor-pointer'>
               <Droplet size={25} className='text-green-900'/>
               <h1 className='text-lg font-serif font-thin text-gray-700'>Stay Hydrated</h1>

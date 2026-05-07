@@ -14,7 +14,7 @@ const Sidebar = ({ page, setPage }) => {
     <div>
 
       {/* Desktop Sidebar */}
-      <div className='hidden md:flex flex-col bg-[#F3F4F0] w-66 h-full px-3 relative border-r border-gray-200'>
+      <div className='hidden md:flex flex-col bg-[#F3F4F0] w-66 h-full px-3 relative border-r border-gray-200 overflow-y-auto'>
         <div className='pt-10 px-4'>
           <h1 className='text-green-500 text-2xl font-serif font-medium'>Health Sense</h1>
           <p className='text-gray-600 mt-1 text-sm'>Welcome to Health Sense</p>
