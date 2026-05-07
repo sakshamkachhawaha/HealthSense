@@ -19,13 +19,11 @@ export default function HealthCheck() {
   const [pain, setPain] = useState(5);            
   const [report, setReport] = useState(null);      
 
-
   function saveAnswer(index, value) {
     const copy = answers.slice();
     copy[index] = { question: questions[index].q, answer: value };
     setAnswers(copy);
   }
-
 
   async function handleNext() {
 
@@ -49,7 +47,6 @@ export default function HealthCheck() {
     if (step > 0) setStep(step - 1);
   }
 
-
   function computeConfidence(payload) {
     let s = 50;
     const primary = (payload[0]?.answer || "").toLowerCase();
@@ -62,7 +59,6 @@ export default function HealthCheck() {
     if (s < 10) s = 10;
     return Math.round(s);
   }
-
 
   async function callGroqIfAvailable(payload) {
     const key = typeof window !== "undefined" ? window.REACT_APP_GROQ_API_KEY : null;
@@ -85,7 +81,6 @@ export default function HealthCheck() {
     }
   }
 
-
   async function makeReport() {
     const payload = questions.map((q, i) => {
       const a = answers[i];
@@ -95,7 +90,6 @@ export default function HealthCheck() {
     });
 
     const ai = await callGroqIfAvailable(payload);
-
 
     let insights;
     if (ai) {
@@ -138,7 +132,6 @@ export default function HealthCheck() {
       insights,
     };
 
-
     try {
       const arr = JSON.parse(localStorage.getItem("healthsense_reports") || "[]");
       arr.unshift(final);
@@ -150,19 +143,31 @@ export default function HealthCheck() {
     setReport(final);
   }
 
-
   if (!report) {
     const cur = questions[step];
     return (
-      <div style={{ maxWidth: 800, margin: "24px auto", padding: 20, background: "#fff", borderRadius: 8 }}>
-        <h2 style={{ marginBottom: 12 }}>Health Check</h2>
+      <div className="max-w-[800px] mx-auto my-6 p-5 bg-white rounded-lg shadow-md dark:bg-[#1E293B] dark:text-gray-300">
+        <h2 className="mb-3 text-3xl font-serif font-light text-[#43664d] dark:text-gray-300">
+          Health Check
+        </h2>
 
-        <label style={{ display: "block", marginBottom: 8 }}>{cur.q}</label>
+        <label className="block mb-2 text-gray-700 font-medium dark:text-gray-300">
+          {cur.q}
+        </label>
 
         {cur.type === "slider" ? (
           <div>
-            <input type="range" min="0" max="10" value={pain} onChange={(e) => setPain(Number(e.target.value))} />
-            <div style={{ textAlign: "center", fontWeight: 600 }}>{pain}/10</div>
+            <input
+              type="range"
+              min="0"
+              max="10"
+              value={pain}
+              onChange={(e) => setPain(Number(e.target.value))}
+              className="w-full accent-[#43664d] dark:accent-gray-300"
+            />
+            <div className="text-center font-semibold text-[#43664d] mt-2 dark:text-gray-300">
+              {pain}/10
+            </div>
           </div>
         ) : (
           <input
@@ -170,13 +175,23 @@ export default function HealthCheck() {
             placeholder={cur.placeholder}
             value={answers[step]?.answer || ""}
             onChange={(e) => saveAnswer(step, e.target.value)}
-            style={{ width: "100%", padding: 8, borderRadius: 4, border: "1px solid #ddd" }}
+            className="w-full p-3 rounded-md border border-gray-300 outline-none focus:border-[#43664d]"
           />
         )}
 
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: 16 }}>
-          <button onClick={handlePrev} disabled={step === 0} style={{ padding: "8px 12px" }}>Prev</button>
-          <button onClick={handleNext} style={{ padding: "8px 12px", background: "#000", color: "#fff" }}>
+        <div className="flex justify-between mt-6">
+          <button
+            onClick={handlePrev}
+            disabled={step === 0}
+            className="px-4 py-2 rounded-md bg-gray-200 text-black hover:bg-gray-300 dark:bg-[#334155] dark:text-gray-300 dark:hover:bg-[#475569] disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
+          >
+            Prev
+          </button>
+
+          <button
+            onClick={handleNext}
+            className="px-4 py-2 rounded-md bg-[#43664d] text-white hover:bg-[#35513d] dark:bg-[#43664d] dark:text-white dark:hover:bg-[#35513d] hover:cursor-pointer"
+          >
             {step === questions.length - 1 ? "Get Results" : "Continue"}
           </button>
         </div>
@@ -184,55 +199,96 @@ export default function HealthCheck() {
     );
   }
 
-
   return (
-    <div style={{ maxWidth: 1000, margin: "24px auto", padding: 20 }}>
-      <div style={{ background: "#fff", padding: 20, borderRadius: 8 }}>
-        <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 12 }}>
-          <div style={{ width: 72, height: 72, borderRadius: 36, border: "2px solid #f87171", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700 }}>
+    <div className="max-w-[1000px] mx-auto my-6 p-5">
+      <div className="bg-white p-5 rounded-lg shadow-md dark:bg-[#1E293B] dark:text-gray-300">
+        
+        <div className="flex items-center gap-4 mb-3">
+          <div className="w-[72px] h-[72px] rounded-full border-2 border-red-300 flex items-center justify-center font-bold text-[#43664d] dark:text-gray-300">
             {report.confidence}%
           </div>
+
           <div>
-            <div style={{ fontSize: 14, color: "#6b7280" }}>{report.severity}</div>
-            <div style={{ fontSize: 12, color: "#9ca3af" }}>{new Date(report.createdAt).toLocaleString()}</div>
-            <div style={{ marginTop: 8 }}><strong>Primary:</strong> {report.primary || "—"}</div>
+            <div className="text-sm text-gray-500 dark:text-gray-400">
+              {report.severity}
+            </div>
+
+            <div className="text-xs text-gray-400 dark:text-gray-500">
+              {new Date(report.createdAt).toLocaleString()}
+            </div>
+
+            <div className="mt-2">
+              <strong>Primary:</strong> {report.primary || "—"}
+            </div>
           </div>
         </div>
 
-        <section style={{ background: "#f3f4f6", padding: 12, borderRadius: 6, marginBottom: 12 }}>
-          <h4 style={{ margin: "0 0 8px 0" }}>Your Responses</h4>
+        <section className="bg-gray-100 p-3 rounded-md mb-3 dark:bg-[#334155]">
+          <h4 className="mb-2 font-semibold text-[#43664d] dark:text-gray-300">
+            Your Responses
+          </h4>
+
           {report.responses.map((r, i) => (
-            <div key={i} style={{ display: "flex", justifyContent: "space-between", padding: "8px 0", borderBottom: "1px solid #e5e7eb" }}>
-              <div style={{ color: "#374151" }}>{r.question}</div>
-              <div style={{ background: "#fff", padding: "4px 8px", borderRadius: 999 }}>{r.answer || "—"}</div>
+            <div
+              key={i}
+              className="flex justify-between py-2 border-b border-gray-200 dark:border-gray-600"
+            >
+              <div className="text-gray-700 dark:text-gray-300">
+                {r.question}
+              </div>
+
+              <div className="bg-white px-3 py-1 rounded-full text-sm shadow-sm dark:bg-[#334155]">
+                {r.answer || "—"}
+              </div>
             </div>
           ))}
         </section>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))", gap: 12, marginBottom: 12 }}>
-          <div style={{ padding: 12, border: "1px solid #e5e7eb", borderRadius: 6 }}>
-            <h5>Possible Causes</h5>
-            <ul style={{ paddingLeft: 18 }}>
-              {report.insights.causes && report.insights.causes.length ? report.insights.causes.map((c,i)=><li key={i}>{c}</li>) : <li>Not enough data</li>}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3 mb-3">
+          
+          <div className="p-3 border border-gray-200 rounded-md dark:border-gray-600">
+            <h5 className="font-semibold mb-2 text-[#43664d] dark:text-gray-300">
+              Possible Causes
+            </h5>
+
+            <ul className="pl-5 list-disc">
+              {report.insights.causes && report.insights.causes.length
+                ? report.insights.causes.map((c, i) => (
+                    <li key={i}>{c}</li>
+                  ))
+                : <li>Not enough data</li>}
             </ul>
           </div>
 
-          <div style={{ padding: 12, border: "1px solid #e5e7eb", borderRadius: 6 }}>
-            <h5>Next Steps</h5>
+          <div className="p-3 border border-gray-200 rounded-md dark:border-gray-600">
+            <h5 className="font-semibold mb-2 text-[#43664d] dark:text-gray-300">
+              Next Steps
+            </h5>
+
             <p>{report.insights.advice}</p>
           </div>
 
-          <div style={{ padding: 12, border: "1px solid #e5e7eb", borderRadius: 6 }}>
-            <h5>Preventive Measures</h5>
-            <ul style={{ paddingLeft: 18 }}>
-              {report.insights.prevention && report.insights.prevention.length ? report.insights.prevention.map((p,i)=><li key={i}>{p}</li>) : <li>General precautions</li>}
+          <div className="p-3 border border-gray-200 rounded-md dark:border-gray-600">
+            <h5 className="font-semibold mb-2 text-[#43664d] dark:text-gray-300">
+              Preventive Measures
+            </h5>
+
+            <ul className="pl-5 list-disc">
+              {report.insights.prevention && report.insights.prevention.length
+                ? report.insights.prevention.map((p, i) => (
+                    <li key={i}>{p}</li>
+                  ))
+                : <li>General precautions</li>}
             </ul>
           </div>
         </div>
 
-        <div style={{ background: "#fff3f2", borderLeft: "4px solid #fecaca", padding: 12, borderRadius: 6 }}>
-          <div style={{ color: "#374151" }}>Based on this assessment, we recommend consulting a healthcare professional.</div>
+        <div className="bg-red-50 border-l-4 border-red-200 p-3 rounded-md dark:bg-[#334155] dark:border-red-700">
+          <div className="text-gray-700 dark:text-gray-300">
+            Based on this assessment, we recommend consulting a healthcare professional.
+          </div>
         </div>
+
       </div>
     </div>
   );
