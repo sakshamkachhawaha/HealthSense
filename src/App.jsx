@@ -1,4 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+  useNavigate,
+  Navigate
+} from 'react-router-dom'
 import Header from './components/Header'
 import Sidebar from './components/Sidebar'
 import Home from './components/Home'
@@ -6,24 +14,49 @@ import Reports from './components/Reports'
 import Profile from './components/Profile'
 import Check from './components/Check'
 
-const App = () => {
-  const [page, setPage] = useState('home')   
+const RouterApp = () => {
+  const location = useLocation()
+  const navigate = useNavigate()
+
+  const [page, setPage] = useState('home')
+
+  useEffect(() => {
+    const path = location.pathname === '/' ? 'home' : location.pathname.replace(/^\//, '')
+    setPage(path)
+  }, [location.pathname])
+
+  const handleSetPage = (p) => {
+    const path = p === 'home' ? '/' : `/${p}`
+    if (location.pathname !== path) navigate(path)
+    setPage(p)
+  }
 
   return (
     <div className='flex flex-col h-screen w-screen overflow-hidden'>
       <Header />
 
       <div className='flex-1 flex flex-row overflow-hidden'>
-        <Sidebar page={page} setPage={setPage} /> 
+        <Sidebar page={page} setPage={handleSetPage} />
 
         <div className="flex-1 overflow-y-auto min-h-0">
-          {page === 'home' && <Home />}
-          {page === 'check' && <Check />}
-          {page === 'reports' && <Reports />}
-          {page === 'profile' && <Profile />}
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/check" element={<Check />} />
+            <Route path="/reports" element={<Reports />} />
+            <Route path="/profile" element={<Profile />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
         </div>
       </div>
     </div>
+  )
+}
+
+const App = () => {
+  return (
+    <Router>
+      <RouterApp />
+    </Router>
   )
 }
 
