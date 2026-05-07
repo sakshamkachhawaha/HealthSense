@@ -1,32 +1,166 @@
-import React from 'react'
-import { FolderOpen } from 'lucide-react';
+import React, { useEffect, useState } from "react";
 
+const Report = () => {
+  const [reports, setReports] = useState([]);
+  const [selectedReport, setSelectedReport] = useState(null);
 
-const Reports = () => {
+  useEffect(() => {
+    try {
+      const storedReports = JSON.parse(
+        localStorage.getItem("healthsense_reports") || "[]"
+      );
+
+      setReports(storedReports);
+    } catch (error) {
+      console.error("Error loading reports", error);
+    }
+  }, []);
+
   return (
-    <>
-    <div className='bg-white w-full h-full p-6'>
-      <div className=' bg-white flex flex-row space-evenly p-4 gap-160'>
-        <div>
-          <h1 className='text-black text-4xl font-serif font-thin'>Health Reports</h1>
-          <p className='pt-1 text-gray-600 text-medium font-serif font-thin'>Your complete history of health assessments</p>
-        </div>
-        <div className='align-right bg-emerald-600 w-41 h-13 border-2 border-[#43664D] rounded-3xl flex items-center justify-center'>
-          <button className="text-white text-medium transform transition duration-300 hover:cursor-pointer hover:scale-95" onClick={() => navigate('/check')}>
-          <span className="text-white text-medium mr-2">+ </span>
-           New Check
-          </button>
-        </div>
+    <div className="min-h-screen bg-gray-100 p-4">
+
+
+      <div className="bg-white border rounded-xl p-3 mb-4 shadow-sm">
+        <h1 className="text-center text-lg font-semibold">
+          Health Sense Reports
+        </h1>
       </div>
-      <div className='flex items-center w-full flex-col justify-center h-90 bg-[#F3F4F0] mt-4 rounded-3xl text-white text-2xl font-serif font-thin'>
-        <FolderOpen size={60} className='text-gray-600'/>
-        <p className='font-serif font-thin mt-4 text-gray-800'>No reports yet</p>
-        <p className='font-sans font-thin mt-4 text-lg text-gray-900'>Complete your first health check to see your reports here.</p>
-        <button className='bg-emerald-600 px-9 py-3 mt-4 rounded-3xl text-xl font-sans transform transition duration-300 hover:cursor-pointer hover:scale-95 '>Start Health Check</button>
+
+
+      {reports.length === 0 && (
+        <div className="bg-white p-6 rounded-xl text-center shadow">
+          <p className="text-gray-500">No Reports Found</p>
+        </div>
+      )}
+
+
+      <div className="space-y-3">
+
+        {reports.map((report) => (
+          <div
+            key={report.id}
+            className="bg-white rounded-xl shadow-sm overflow-hidden"
+          >
+
+
+            <div
+              onClick={() =>
+                setSelectedReport(
+                  selectedReport === report.id ? null : report.id
+                )
+              }
+              className="flex items-center justify-between p-4 cursor-pointer hover:bg-gray-50 transition"
+            >
+
+              <div className="flex items-center gap-3">
+
+
+                <div className="w-12 h-12 rounded-full border-2 border-red-300 flex items-center justify-center text-sm font-bold text-red-500">
+                  {report.confidence}%
+                </div>
+
+                <div>
+                  <h2 className="font-semibold text-gray-800">
+                    {report.insights?.disease}
+                  </h2>
+
+                  <p className="text-xs text-gray-500">
+                    {report.primary}
+                  </p>
+
+                  <p className="text-[11px] text-gray-400">
+                    {new Date(report.createdAt).toLocaleDateString()}
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-gray-400 text-xl">
+                {selectedReport === report.id ? "−" : "+"}
+              </div>
+            </div>
+
+
+            {selectedReport === report.id && (
+              <div className="border-t p-4 bg-gray-50">
+
+
+                <div className="mb-4">
+                  <span className="text-sm font-semibold">
+                    Severity:
+                  </span>{" "}
+                  <span className="text-sm text-gray-700">
+                    {report.severity}
+                  </span>
+                </div>
+
+
+                <div className="mb-4">
+                  <h3 className="font-semibold mb-2">
+                    Responses
+                  </h3>
+
+                  <div className="space-y-2">
+                    {report.responses.map((item, index) => (
+                      <div
+                        key={index}
+                        className="bg-white p-2 rounded-lg border text-sm"
+                      >
+                        <p className="font-medium text-gray-700">
+                          {item.question}
+                        </p>
+
+                        <p className="text-gray-600">
+                          {item.answer || "—"}
+                        </p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+
+                <div className="mb-4">
+                  <h3 className="font-semibold mb-2">
+                    Possible Causes
+                  </h3>
+
+                  <ul className="list-disc list-inside text-sm text-gray-700">
+                    {report.insights?.causes?.map((cause, i) => (
+                      <li key={i}>{cause}</li>
+                    ))}
+                  </ul>
+                </div>
+
+
+                <div className="mb-4">
+                  <h3 className="font-semibold mb-2">
+                    Next Steps
+                  </h3>
+
+                  <p className="text-sm text-gray-700">
+                    {report.insights?.advice}
+                  </p>
+                </div>
+
+
+                <div>
+                  <h3 className="font-semibold mb-2">
+                    Prevention
+                  </h3>
+
+                  <ul className="list-disc list-inside text-sm text-gray-700">
+                    {report.insights?.prevention?.map((item, i) => (
+                      <li key={i}>{item}</li>
+                    ))}
+                  </ul>
+                </div>
+
+              </div>
+            )}
+          </div>
+        ))}
       </div>
     </div>
-    </>
-  )
-}
+  );
+};
 
-export default Reports
+export default Report;
