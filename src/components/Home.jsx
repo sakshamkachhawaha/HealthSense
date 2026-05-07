@@ -1,4 +1,5 @@
 import React from 'react'
+import { useNavigate } from 'react-router-dom'
 import { HeartPlus } from 'lucide-react';
 import { Zap } from 'lucide-react';
 import { ChevronRight } from 'lucide-react';
@@ -13,6 +14,8 @@ import { SportShoe } from 'lucide-react';
 
 
 const Home = () => {
+  const navigate = useNavigate()
+
   return (
     <div className='bg-white w-full h-full p-8'>
         <div className='bg-linear-to-br from-[#9cc6a5] to-[#bee8dc] rounded-3xl p-12'>
@@ -20,8 +23,8 @@ const Home = () => {
           <h1 className='text-4xl font-serif mt-2 text-gray-800 font-thin'>How are you feeling today?</h1>
           <p className='text-gray-600 mt-4'>Your AI health companion is here to help you understand your symptoms and guide your wellness journey.</p>
           <div className='flex flex-row gap-4 '>
-            <button className='bg-[#395c43] w-58 h-13 border-2 border-[#43664D] rounded-3xl flex items-center justify-center mt-8 text-white text-medium hover:cursor-pointer'><span><HeartPlus size={20} className='mr-3'/> </span>Start Health Check</button>
-            <button className='bg-[#43664D] w-49 h-13 border-2 border-[#43664D] rounded-3xl flex items-center justify-center mt-8 text-white text-medium hover:cursor-pointer'><span><Zap  size={20} className='mr-3'/> </span>Quick Check</button>
+            <button type="button" onClick={() => navigate('/check')} className='bg-[#395c43] w-58 h-13 border-2 border-[#43664D] rounded-3xl flex items-center justify-center mt-8 text-white text-medium hover:cursor-pointer'><span><HeartPlus size={20} className='mr-3'/> </span>Start Health Check</button>
+            <button type="button" onClick={() => navigate('/check')} className='bg-[#43664D] w-49 h-13 border-2 border-[#43664D] rounded-3xl flex items-center justify-center mt-8 text-white text-medium hover:cursor-pointer'><span><Zap  size={20} className='mr-3'/> </span>Quick Check</button>
           </div>
         </div>
 
@@ -68,7 +71,7 @@ const Home = () => {
         <div className='mt-11'>
           <div className='flex items-center justify-between'>
             <h1 className='text-3xl font-serif font-thin p-1'>Past Reports</h1>
-            <button className='text-[#43664D] hover:text-[#395c43] cursor-pointer p-2 mr-6 text-sm'>View all → </button>
+            <button type="button" onClick={() => navigate('/reports')} className='text-[#43664D] hover:text-[#395c43] cursor-pointer p-2 mr-6 text-sm'>View all → </button>
           </div>
           <div className='bg-[#e9ebe5] rounded-3xl p-3 mt-4 flex items-center justify-between hover:border duration-700 transition-all border-[#43664D] cursor-pointer'>
             <div className='flex items-center gap-4'>
@@ -84,6 +87,7 @@ const Home = () => {
             </div>
           </div>
         </div>
+
 
 
 
@@ -115,7 +119,6 @@ const Home = () => {
           </div>
       
         </div>
-
 
 
 
