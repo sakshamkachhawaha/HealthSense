@@ -8,7 +8,7 @@ import { Gavel } from 'lucide-react';
 
 const Profile = () => {
   return (
-    <div className='bg-gray-50 w-full h-full '>
+    <div className='bg-white w-full h-full '>
       <div className='ml-50 mr-50 mt-5 p-5 flex flex-col gap-6'>
         <h1 className='text-black text-4xl font-serif '>Profile & Settings</h1>
 
