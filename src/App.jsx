@@ -30,6 +30,15 @@ const RouterApp = () => {
     if (location.pathname !== path) navigate(path)
     setPage(p)
   }
+  const [darkMode, setDarkMode] = useState(false)
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.classList.add("dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+    }
+  }, [darkMode]);
 
   return (
     <div className='flex flex-col h-screen w-screen overflow-hidden'>
@@ -38,12 +47,12 @@ const RouterApp = () => {
       <div className='flex-1 flex flex-row overflow-hidden'>
         <Sidebar page={page} setPage={handleSetPage} />
 
-        <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="flex-1 overflow-y-auto min-h-0 dark:bg-[#0F172A]">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/check" element={<Check />} />
             <Route path="/reports" element={<Reports />} />
-            <Route path="/profile" element={<Profile />} />
+            <Route path="/profile" element={<Profile darkMode={darkMode} setDarkMode={setDarkMode} />} />
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>
         </div>

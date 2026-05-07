@@ -49,17 +49,17 @@ const Home = () => {
     {
       title: 'Last Score',
       value: latestReport ? `${latestReport.confidence}%` : '--',
-      icon: <ChartNoAxesCombined size={45} className='bg-green-200 p-2 rounded-2xl'/>
+      icon: <ChartNoAxesCombined size={45} className='bg-green-200 p-2 rounded-2xl dark:text-black'/>
     },
     {
       title: 'Last Check',
       value: latestReport ? new Date(latestReport.createdAt).toLocaleDateString() : '--',
-      icon: <CalendarDays size={45} className='bg-yellow-200 p-2 rounded-2xl'/>
+      icon: <CalendarDays size={45} className='bg-yellow-200 p-2 rounded-2xl dark:text-black'/>
     },
     {
       title: 'Total Checks',
       value: reports.length,
-      icon: <ClipboardList size={45} className='bg-slate-300 p-2 rounded-2xl'/>
+      icon: <ClipboardList size={45} className='bg-slate-300 p-2 rounded-2xl dark:text-black'/>
     },
     {
       title: 'Status',
@@ -69,7 +69,7 @@ const Home = () => {
           : reports.some(r => r.severity === 'Moderate Concern')
           ? 'Moderate'
           : 'Good',
-      icon: <TriangleAlert size={45} className='bg-red-200 p-2 rounded-2xl'/>
+      icon: <TriangleAlert size={45} className='bg-red-200 p-2 rounded-2xl dark:text-black'/>
     }
   ]
 
@@ -77,42 +77,42 @@ const Home = () => {
     {
       title: 'Stay Hydrated',
       text: 'Drink 8 glasses of water daily',
-      icon: <Droplet size={25} className='text-green-900'/>
+      icon: <Droplet size={25} className='text-green-900 dark:text-green-300'/>
     },
     {
       title: 'Quality Sleep',
       text: 'Aim for 7-9 hours each night',
-      icon: <Moon size={25} className='text-green-900'/>
+      icon: <Moon size={25} className='text-green-900 dark:text-green-300'/>
     },
     {
       title: 'Mindfulness',
       text: '10 min meditation daily',
-      icon: <Flower size={25} className='text-green-900'/>
+      icon: <Flower size={25} className='text-green-900 dark:text-green-300'/>
     },
     {
       title: 'Stay Active',
       text: 'Exercise for at least 30 minutes daily',
-      icon: <Footprints size={25} className='text-green-900'/>
+      icon: <Footprints size={25} className='text-green-900 dark:text-green-300'/>
     }
   ]
 
   return (
 
-    <div className='bg-white w-full min-h-screen p-8'>
+    <div className='bg-white w-full min-h-screen p-8 dark:bg-[#0F172A] dark:text-gray-300'>
 
 
 
-      <div className='bg-linear-to-br from-[#9cc6a5] to-[#bee8dc] rounded-3xl p-12'>
+      <div className='bg-linear-to-br from-[#9cc6a5] to-[#bee8dc] rounded-3xl p-12 dark:bg-gradient-to-br dark:from-[#395c43] dark:to-[#43664D]'>
 
-        <p className='text-[rgb(63,101,74)]'>
+        <p className='text-[rgb(63,101,74)] dark:text-green-300 font-medium text-sm uppercase tracking-wide'>
           GOOD MORNING
         </p>
 
-        <h1 className='text-4xl font-serif mt-2 text-gray-800 font-thin'>
+        <h1 className='text-4xl font-serif mt-2 text-gray-800 font-thin dark:text-gray-200'>
           How are you feeling today?
         </h1>
 
-        <p className='text-gray-600 mt-4'>
+        <p className='text-gray-600 mt-4 dark:text-gray-300'>
           Your AI health companion is here to help you understand your symptoms and guide your wellness journey.
         </p>
 
@@ -120,7 +120,7 @@ const Home = () => {
 
           <button
             onClick={() => navigate('/check')}
-            className='bg-[#395c43] w-58 h-13 border-2 border-[#43664D] rounded-3xl flex items-center justify-center mt-8 text-white'
+            className='bg-[#395c43] w-58 h-13 border-2 border-[#43664D] rounded-3xl flex items-center justify-center mt-8 text-white dark:bg-[#43664D] dark:hover:bg-[#395c43] transition-colors hover:cursor-pointer'
           >
             <HeartPlus size={20} className='mr-3'/>
             Start Health Check
@@ -128,7 +128,7 @@ const Home = () => {
 
           <button
             onClick={() => navigate('/check')}
-            className='bg-gray-100 text-black w-49 h-13 border-2 border-[#43664D] rounded-3xl flex items-center justify-center mt-8 '
+            className='bg-gray-100 text-black w-49 h-13 border-2 border-[#43664D] rounded-3xl flex items-center justify-center mt-8 dark:bg-gray-300 dark:text-gray-700 dark:border-gray-600 dark:hover:bg-gray-200 transition-colors hover:cursor-pointer'
           >
             <Zap size={20} className='mr-3'/>
             Quick Check
@@ -152,7 +152,7 @@ const Home = () => {
 
             <div
               key={index}
-              className='bg-[#e9ebe5] w-70 rounded-3xl p-5 flex items-center gap-5'
+              className='bg-[#e9ebe5] w-70 rounded-3xl p-5 flex items-center gap-5 dark:bg-[#1E293B] dark:text-gray-300'
             >
 
               {card.icon}
@@ -189,7 +189,7 @@ const Home = () => {
 
           <button
             onClick={() => navigate('/reports')}
-            className='text-[#43664D]'
+            className='text-[#43664D] dark:text-gray-300 hover:text-[#395c43] dark:hover:text-gray-100 text-sm font-medium transition-colors hover:cursor-pointer'
           >
             View all →
           </button>
@@ -200,7 +200,7 @@ const Home = () => {
 
           {sortedReports.length === 0 ? (
 
-            <div className='bg-[#e9ebe5] rounded-3xl p-6 text-center text-gray-500'>
+            <div className='bg-[#e9ebe5] rounded-3xl p-6 text-center text-gray-500 dark:bg-[#1E293B] dark:text-gray-300'>
               No reports found
             </div>
 
@@ -211,7 +211,7 @@ const Home = () => {
               <div
                 key={report.id}
                 onClick={() => navigate('/reports')}
-                className='bg-[#e9ebe5] rounded-3xl p-3 flex items-center justify-between cursor-pointer'
+                className='bg-[#e9ebe5] rounded-3xl p-3 flex items-center justify-between cursor-pointer dark:bg-[#1E293B] dark:text-gray-300'
               >
 
                 <div className='flex items-center gap-4'>
@@ -236,7 +236,7 @@ const Home = () => {
 
                 <div className='flex gap-5 items-center'>
 
-                  <p className='bg-white px-4 py-1 rounded-xl text-sm'>
+                  <p className='bg-white px-4 py-1 rounded-xl text-sm dark:bg-gray-700 dark:text-gray-300'>
                     {report.severity}
                   </p>
 
@@ -268,16 +268,16 @@ const Home = () => {
 
             <div
               key={index}
-              className='bg-[#e9ebe5] w-70 rounded-3xl p-5 flex flex-col gap-1'
+              className='bg-[#e9ebe5] w-70 rounded-3xl p-5 flex flex-col gap-1 dark:bg-[#1E293B] dark:text-gray-300'
             >
 
               {item.icon}
 
-              <h1 className='text-lg font-serif font-thin text-gray-700'>
+              <h1 className='text-lg font-serif font-thin text-gray-700 dark:text-gray-300'>
                 {item.title}
               </h1>
 
-              <p className='text-sm font-thin'>
+              <p className='text-sm font-thin dark:text-gray-400'>
                 {item.text}
               </p>
 
