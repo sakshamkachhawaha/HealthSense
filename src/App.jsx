@@ -4,7 +4,7 @@ import Sidebar from './components/Sidebar'
 import Home from './components/Home'
 import Reports from './components/Reports'
 import Profile from './components/Profile'
-
+import Check from './components/Check'
 
 const App = () => {
   const [page, setPage] = useState('home')   
@@ -18,7 +18,7 @@ const App = () => {
 
         <div className="flex-1">
           {page === 'home' && <Home />}
-          {page === 'check' && <div>Check Page</div>}
+          {page === 'check' && <Check />}
           {page === 'reports' && <Reports />}
           {page === 'profile' && <Profile />}
         </div>
