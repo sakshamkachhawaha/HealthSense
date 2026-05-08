@@ -98,25 +98,25 @@ const Home = () => {
 
   return (
 
-    <div className='bg-white w-full min-h-screen p-8 dark:bg-[#0F172A] dark:text-gray-300'>
+    <div className='bg-white w-full min-h-screen p-4 md:p-8 dark:bg-[#0F172A] dark:text-gray-300'>
 
 
 
-      <div className='bg-linear-to-br from-[#9cc6a5] to-[#bee8dc] rounded-3xl p-12 dark:bg-gradient-to-br dark:from-[#395c43] dark:to-[#43664D]'>
+      <div className='bg-linear-to-br from-[#9cc6a5] to-[#bee8dc] rounded-3xl p-6 md:p-12 dark:bg-gradient-to-br dark:from-[#395c43] dark:to-[#43664D]'>
 
         <p className='text-[rgb(63,101,74)] dark:text-green-300 font-medium text-sm uppercase tracking-wide'>
           GOOD MORNING
         </p>
 
-        <h1 className='text-4xl font-serif mt-2 text-gray-800 font-thin dark:text-gray-200'>
+        <h1 className='text-2xl md:text-4xl font-serif mt-2 text-gray-800 font-thin dark:text-gray-200'>
           How are you feeling today?
         </h1>
 
-        <p className='text-gray-600 mt-4 dark:text-gray-300'>
+        <p className='text-gray-600 mt-4 dark:text-gray-300 text-sm md:text-base'>
           Your AI health companion is here to help you understand your symptoms and guide your wellness journey.
         </p>
 
-        <div className='flex gap-4'>
+        <div className='flex flex-col sm:flex-row gap-3 sm:gap-4'>
 
           <button
             onClick={() => navigate('/check')}
@@ -142,17 +142,17 @@ const Home = () => {
 
       <div className='mt-11'>
 
-        <h1 className='text-3xl font-serif font-thin p-1'>
+        <h1 className='text-2xl md:text-3xl font-serif font-thin p-1'>
           Your Health Overview
         </h1>
 
-        <div className='flex flex-wrap gap-4 mt-4'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4'>
 
           {cards.map((card, index) => (
 
             <div
               key={index}
-              className='bg-[#e9ebe5] w-70 rounded-3xl p-5 flex items-center gap-5 dark:bg-[#1E293B] dark:text-gray-300'
+              className='bg-[#e9ebe5] rounded-3xl p-5 flex items-center gap-5 dark:bg-[#1E293B] dark:text-gray-300'
             >
 
               {card.icon}
@@ -183,7 +183,7 @@ const Home = () => {
 
         <div className='flex justify-between items-center'>
 
-          <h1 className='text-3xl font-serif font-thin p-1'>
+          <h1 className='text-2xl md:text-3xl font-serif font-thin p-1'>
             Past Reports
           </h1>
 
@@ -258,17 +258,17 @@ const Home = () => {
 
       <div className='mt-11 pb-9'>
 
-        <h1 className='text-3xl font-serif font-thin p-1'>
+        <h1 className='text-2xl md:text-3xl font-serif font-thin p-1'>
           Daily Wellness
         </h1>
 
-        <div className='flex flex-wrap gap-4 mt-4'>
+        <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mt-4'>
 
           {wellness.map((item, index) => (
 
             <div
               key={index}
-              className='bg-[#e9ebe5] w-70 rounded-3xl p-5 flex flex-col gap-1 dark:bg-[#1E293B] dark:text-gray-300'
+              className='bg-[#e9ebe5] rounded-3xl p-5 flex flex-col gap-1 dark:bg-[#1E293B] dark:text-gray-300'
             >
 
               {item.icon}

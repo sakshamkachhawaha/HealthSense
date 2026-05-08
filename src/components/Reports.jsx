@@ -17,7 +17,7 @@ const Report = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gray-100 p-4 dark:bg-[#0F172A]">
+    <div className="min-h-screen bg-gray-100 p-3 md:p-4 dark:bg-[#0F172A]">
 
 
       <div className="bg-white border rounded-xl p-3 mb-4 shadow-sm dark:bg-[#1E293B] dark:border-gray-600">

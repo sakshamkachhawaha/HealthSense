@@ -50,7 +50,7 @@ const RouterApp = () => {
       <div className='flex-1 flex flex-row overflow-hidden'>
         <Sidebar page={page} setPage={handleSetPage} />
 
-        <div className="flex-1 overflow-y-auto min-h-0 dark:bg-[#0F172A]">
+        <div className="flex-1 overflow-y-auto min-h-0 pb-16 md:pb-0 dark:bg-[#0F172A]">
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/check" element={<Check />} />

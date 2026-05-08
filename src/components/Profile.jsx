@@ -91,11 +91,11 @@ const Profile = ({ darkMode, setDarkMode }) => {
 
   return (
     <div className='bg-white w-full h-full dark:bg-[#0F172A]'>
-      <div className='ml-50 mr-50 p-5 flex flex-col gap-6'>
-        <h1 className='text-black text-4xl font-serif dark:text-gray-200'>Profile & Settings</h1>
+      <div className='px-4 md:px-8 lg:ml-50 lg:mr-50 p-5 flex flex-col gap-6'>
+        <h1 className='text-black text-2xl md:text-4xl font-serif dark:text-gray-200'>Profile & Settings</h1>
 
-        <div className='bg-[#F3F4F0] p-10 rounded-3xl dark:bg-[#1E293B]'>
-          <div className='flex flex-row gap-5 items-center'>
+        <div className='bg-[#F3F4F0] p-6 md:p-10 rounded-3xl dark:bg-[#1E293B]'>
+          <div className='flex flex-col sm:flex-row gap-5 items-center sm:items-start'>
 
             <div className='bg-linear-to-br from-[#84a98c] to-[#bee8dc] p-4 rounded-full'>
               <UserRound size={50} color='Black' />
@@ -180,7 +180,7 @@ const Profile = ({ darkMode, setDarkMode }) => {
         </div>
 
 
-        <div className='flex flex-row gap-4'>
+        <div className='flex flex-col sm:flex-row gap-4'>
           <div className='bg-[#F3F4F0] pt-8 pb-6 rounded-3xl w-full flex flex-col items-center gap-4 dark:bg-[#1E293B]'>
             <span className='text-black text-4xl dark:text-gray-300'>{reports.length}</span>
             <p className='text-black text-sm font-serif dark:text-gray-300'>Total Checks</p>
