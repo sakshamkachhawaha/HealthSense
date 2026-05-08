@@ -30,9 +30,12 @@ const RouterApp = () => {
     if (location.pathname !== path) navigate(path)
     setPage(p)
   }
-  const [darkMode, setDarkMode] = useState(false)
+  const [darkMode, setDarkMode] = useState(() => {
+    return localStorage.getItem('darkMode') === 'true'
+  })
 
   useEffect(() => {
+    localStorage.setItem('darkMode', darkMode)
     if (darkMode) {
       document.documentElement.classList.add("dark");
     } else {
