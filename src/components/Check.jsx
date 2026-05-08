@@ -146,8 +146,8 @@ export default function HealthCheck() {
   if (!report) {
     const cur = questions[step];
     return (
-      <div className="max-w-[800px] mx-auto my-6 p-5 bg-white rounded-lg shadow-md dark:bg-[#1E293B] dark:text-gray-300">
-        <h2 className="mb-3 text-3xl font-serif font-light text-[#43664d] dark:text-gray-300">
+      <div className="max-w-[800px] mx-4 md:mx-auto my-6 p-5 bg-white rounded-lg shadow-md dark:bg-[#1E293B] dark:text-gray-300">
+        <h2 className="mb-3 text-2xl md:text-3xl font-serif font-light text-[#43664d] dark:text-gray-300">
           Health Check
         </h2>
 
@@ -200,8 +200,8 @@ export default function HealthCheck() {
   }
 
   return (
-    <div className="max-w-[1000px] mx-auto my-6 p-5">
-      <div className="bg-white p-5 rounded-lg shadow-md dark:bg-[#1E293B] dark:text-gray-300">
+    <div className="max-w-[1000px] mx-4 md:mx-auto my-6">
+      <div className="bg-white p-4 md:p-5 rounded-lg shadow-md dark:bg-[#1E293B] dark:text-gray-300">
         
         <div className="flex items-center gap-4 mb-3">
           <div className="w-[72px] h-[72px] rounded-full border-2 border-red-300 flex items-center justify-center font-bold text-[#43664d] dark:text-gray-300">
