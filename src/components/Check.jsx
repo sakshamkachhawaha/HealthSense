@@ -18,24 +18,34 @@ export default function HealthCheck() {
   const [answers, setAnswers] = useState([]);      
   const [pain, setPain] = useState(5);            
   const [report, setReport] = useState(null);      
+  const [error, setError] = useState("");
 
   function saveAnswer(index, value) {
     const copy = answers.slice();
     copy[index] = { question: questions[index].q, answer: value };
     setAnswers(copy);
+
+    if (String(value).trim()) {
+      setError("");
+    }
   }
 
   async function handleNext() {
-
     if (questions[step].type === "slider") {
       saveAnswer(step, `${pain}/10`);
     }
-    const currentAnswer = answers[step] || (questions[step].type === "slider" ? { answer: `${pain}/10` } : null);
-    if (!currentAnswer || !String(currentAnswer.answer || "").trim()) {
 
-      alert("Please provide an answer before continuing.");
+    const currentAnswer =
+      answers[step] ||
+      (questions[step].type === "slider" ? { answer: `${pain}/10` } : null);
+
+    if (!currentAnswer || !String(currentAnswer.answer || "").trim()) {
+      setError("Please provide an answer before continuing.");
       return;
     }
+
+    setError("");
+
     if (step === questions.length - 1) {
       await makeReport();
     } else {
@@ -44,6 +54,7 @@ export default function HealthCheck() {
   }
 
   function handlePrev() {
+    setError("");
     if (step > 0) setStep(step - 1);
   }
 
@@ -143,30 +154,46 @@ export default function HealthCheck() {
     setReport(final);
   }
 
-  if (!report) {
-    const cur = questions[step];
-    return (
-      <div className="max-w-[800px] mx-4 md:mx-auto my-6 p-5 bg-white rounded-lg shadow-md dark:bg-[#1E293B] dark:text-gray-300">
-        <h2 className="mb-3 text-2xl md:text-3xl font-serif font-light text-[#43664d] dark:text-gray-300">
-          Health Check
-        </h2>
+if (!report) {
+  const cur = questions[step];
 
-        <label className="block mb-2 text-gray-700 font-medium dark:text-gray-300">
-          {cur.q}
-        </label>
+  return (
+    <div className="min-h-[70vh] flex items-center justify-center px-4 py-8">
+      <div className="w-full max-w-[820px] rounded-2xl border border-gray-200 bg-white/90 p-5 md:p-8 shadow-xl shadow-gray-200/60 backdrop-blur-sm dark:border-slate-700 dark:bg-[#1E293B] dark:shadow-black/20 dark:text-gray-300">
+        
+        <div className="mb-7 border-b border-gray-200 pb-5 dark:border-slate-700">
+          <p className="mb-2 text-sm font-medium tracking-wide text-[#43664d] dark:text-gray-400">
+            Step {step + 1} of {questions.length}
+          </p>
+
+          <h2 className="text-2xl md:text-3xl font-serif font-light text-[#43664d] dark:text-gray-300">
+            Health Check
+          </h2>
+        </div>
+
+        <div className="rounded-xl bg-gray-50 p-4 md:p-6 border border-gray-100 dark:bg-[#0F172A]/60 dark:border-slate-700">
+          <label className="block mb-4 text-base md:text-lg text-gray-700 font-medium leading-relaxed dark:text-gray-300">
+            {cur.q}
+          </label>
 
         {cur.type === "slider" ? (
-          <div>
+          <div className="pt-2">
             <input
               type="range"
               min="0"
               max="10"
               value={pain}
-              onChange={(e) => setPain(Number(e.target.value))}
-              className="w-full accent-[#43664d] dark:accent-gray-300"
+              onChange={(e) => {
+                setPain(Number(e.target.value));
+                setError("");
+              }}
+              className="w-full accent-[#43664d] dark:accent-gray-300 cursor-pointer"
             />
-            <div className="text-center font-semibold text-[#43664d] mt-2 dark:text-gray-300">
-              {pain}/10
+
+            <div className="mt-5 flex items-center justify-center">
+              <span className="rounded-full bg-[#43664d]/10 px-5 py-2 text-lg font-semibold text-[#43664d] dark:bg-slate-700 dark:text-gray-200">
+                {pain}/10
+              </span>
             </div>
           </div>
         ) : (
@@ -175,30 +202,37 @@ export default function HealthCheck() {
             placeholder={cur.placeholder}
             value={answers[step]?.answer || ""}
             onChange={(e) => saveAnswer(step, e.target.value)}
-            className="w-full p-3 rounded-md border border-gray-300 outline-none focus:border-[#43664d]"
+            className="w-full rounded-xl border border-gray-300 bg-white p-4 text-gray-800 outline-none transition-all duration-200 placeholder:text-gray-400 focus:border-[#43664d] focus:ring-4 focus:ring-[#43664d]/10 dark:border-slate-600 dark:bg-[#1E293B] dark:text-gray-200 dark:placeholder:text-gray-500 dark:focus:border-gray-300 dark:focus:ring-gray-300/10"
           />
         )}
 
-        <div className="flex justify-between mt-6">
+        {error && (
+          <p className="mt-3 text-sm font-medium text-red-600 dark:text-red-400">
+            {error}
+          </p>
+        )}
+        </div>
+
+        <div className="mt-7 flex items-center justify-between gap-4">
           <button
             onClick={handlePrev}
             disabled={step === 0}
-            className="px-4 py-2 rounded-md bg-gray-200 text-black hover:bg-gray-300 dark:bg-[#334155] dark:text-gray-300 dark:hover:bg-[#475569] disabled:opacity-50 disabled:cursor-not-allowed hover:cursor-pointer"
+            className="min-w-[100px] rounded-xl bg-gray-100 px-5 py-3 text-sm font-medium text-gray-800 transition-all duration-200 hover:bg-gray-200 hover:shadow-sm dark:bg-[#334155] dark:text-gray-300 dark:hover:bg-[#475569] disabled:cursor-not-allowed disabled:opacity-50"
           >
             Prev
           </button>
 
           <button
             onClick={handleNext}
-            className="px-4 py-2 rounded-md bg-[#43664d] text-white hover:bg-[#35513d] dark:bg-[#43664d] dark:text-white dark:hover:bg-[#35513d] hover:cursor-pointer"
+            className="min-w-[130px] rounded-xl bg-[#43664d] px-5 py-3 text-sm font-medium text-white shadow-md shadow-[#43664d]/20 transition-all duration-200 hover:bg-[#35513d] hover:shadow-lg hover:shadow-[#43664d]/25"
           >
             {step === questions.length - 1 ? "Get Results" : "Continue"}
           </button>
         </div>
       </div>
-    );
-  }
-
+    </div>
+  );
+}
   return (
     <div className="max-w-[1000px] mx-4 md:mx-auto my-6">
       <div className="bg-white p-4 md:p-5 rounded-lg shadow-md dark:bg-[#1E293B] dark:text-gray-300">
