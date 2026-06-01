@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo} from 'react'
+import { useEffect, useState, useMemo} from 'react'
 import { UserRound } from 'lucide-react';
 import { Moon } from 'lucide-react';
 import { Bell } from 'lucide-react';
@@ -6,32 +6,49 @@ import { LockKeyhole } from 'lucide-react';
 import { ShieldCheck } from 'lucide-react';
 import { Gavel } from 'lucide-react';
 
+function getStoredHealthReports() {
+  try {
+    const aiReports = JSON.parse(localStorage.getItem("healthsense_ai_reports") || "[]");
+    const oldReports = JSON.parse(localStorage.getItem("healthsense_reports") || "[]");
+
+    if (Array.isArray(aiReports) && aiReports.length > 0) {
+      return aiReports;
+    }
+
+    if (Array.isArray(oldReports) && oldReports.length > 0) {
+      return oldReports;
+    }
+
+    return [];
+  } catch (error) {
+    console.error("Failed to read health reports from localStorage:", error);
+    return [];
+  }
+}
+
+function getStoredProfile() {
+  const defaultProfile = {
+    name: 'Set Your Username',
+    email: 'Set Your Email'
+  };
+
+  try {
+    const savedProfile = localStorage.getItem('userProfile');
+    return savedProfile ? JSON.parse(savedProfile) : defaultProfile;
+  } catch (error) {
+    console.error("Failed to read profile from localStorage:", error);
+    return defaultProfile;
+  }
+}
+
 const Profile = ({ darkMode, setDarkMode }) => {
 
 
   const [isEditing, setIsEditing] = useState(false)
 
-  const [profile, setProfile] = useState({
-    name: 'Set Your Username',
-    email: 'Set Your Email'
-  })
+  const [profile, setProfile] = useState(getStoredProfile)
 
-  const [tempProfile, setTempProfile] = useState({
-    name: '',
-    email: ''
-  })
-
-
-  useEffect(() => {
-    const savedProfile = localStorage.getItem('userProfile')
-
-    if (savedProfile) {
-      const parsedProfile = JSON.parse(savedProfile)
-
-      setProfile(parsedProfile)
-      setTempProfile(parsedProfile)
-    }
-  }, [])
+  const [tempProfile, setTempProfile] = useState(getStoredProfile)
 
 
   const handleEdit = () => {
@@ -61,11 +78,7 @@ const Profile = ({ darkMode, setDarkMode }) => {
 
 
   const loadReports = () => {
-    try {
-      return JSON.parse(localStorage.getItem('healthsense_reports')) || []
-    } catch {
-      return []
-    }
+    return getStoredHealthReports()
   }
 
   const [reports, setReports] = useState(loadReports())
@@ -80,13 +93,14 @@ const Profile = ({ darkMode, setDarkMode }) => {
 
   }, [])
 
-  const sortedReports = useMemo(() => {
-    return [...reports].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    )
-  }, [reports])
+  const sortedReports = useMemo(() => reports, [reports])
 
   const latestReport = sortedReports[0]
+  const latestConfidence = latestReport?.confidenceScore ?? latestReport?.confidence ?? 0
+  const lowConcernCount = reports.filter((report) => {
+    const severity = report.urgencyLevel ?? report.severity ?? "General";
+    return severity === "Low" || severity === "Low Concern";
+  }).length
 
 
   return (
@@ -186,11 +200,11 @@ const Profile = ({ darkMode, setDarkMode }) => {
             <p className='text-black text-sm font-serif dark:text-gray-300'>Total Checks</p>
           </div>
           <div className='bg-[#F3F4F0] pt-8 pb-6 rounded-3xl w-full flex flex-col items-center gap-4 dark:bg-[#1E293B]'>
-            <span className='text-black text-4xl dark:text-gray-300'>{latestReport ? `${latestReport.confidence}%` : '--'}</span>
+            <span className='text-black text-4xl dark:text-gray-300'>{latestReport ? `${latestConfidence}%` : '--'}</span>
             <p className='text-black text-sm font-serif dark:text-gray-300'>Avg Score</p>
           </div>
           <div className='bg-[#F3F4F0] pt-8 pb-6 rounded-3xl w-full flex flex-col items-center gap-4 dark:bg-[#1E293B]'>
-            <span className='text-black text-4xl dark:text-gray-300'>0</span>
+            <span className='text-black text-4xl dark:text-gray-300'>{lowConcernCount}</span>
             <p className='text-black text-sm font-serif dark:text-gray-300'>Low Concern</p>
           </div>
         </div>
