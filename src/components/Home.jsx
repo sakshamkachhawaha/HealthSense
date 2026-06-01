@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react'
+import { useState, useMemo, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { HeartPlus } from 'lucide-react'
@@ -13,16 +13,102 @@ import { Moon } from 'lucide-react'
 import { Flower } from 'lucide-react'
 import { Footprints } from 'lucide-react'
 
+function getStoredHealthReports() {
+  try {
+    const aiReports = JSON.parse(localStorage.getItem("healthsense_ai_reports") || "[]");
+    const oldReports = JSON.parse(localStorage.getItem("healthsense_reports") || "[]");
+
+    if (Array.isArray(aiReports) && aiReports.length > 0) {
+      return aiReports;
+    }
+
+    if (Array.isArray(oldReports) && oldReports.length > 0) {
+      return oldReports;
+    }
+
+    return [];
+  } catch (error) {
+    console.error("Failed to read health reports from localStorage:", error);
+    return [];
+  }
+}
+
+function getReportDisplayTitle(report) {
+  const primary = String(report.primaryConcern || report.primary || "").trim();
+
+  const genericTitles = [
+    "AI Health Guidance Report",
+    "AI Generated Health Report",
+    "Health Assessment Report",
+    "Health Check Summary",
+    "General health concern",
+    "General Health Concern",
+  ];
+
+  if (primary && !genericTitles.includes(primary)) {
+    return primary;
+  }
+
+  const responses = Array.isArray(report.responses) ? report.responses : [];
+
+  const symptomResponse = responses.find((item) => {
+    const q = String(item.question || "").toLowerCase();
+    return (
+      q.includes("symptom") ||
+      q.includes("experiencing") ||
+      q.includes("pain") ||
+      q.includes("discomfort") ||
+      q.includes("concern")
+    );
+  });
+
+  if (symptomResponse) {
+    const answer = Array.isArray(symptomResponse.answer)
+      ? symptomResponse.answer.join(", ")
+      : String(symptomResponse.answer || "");
+
+    const cleanAnswer = answer
+      .replace("Other:", "")
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean)
+      .slice(0, 2)
+      .join(", ");
+
+    if (cleanAnswer) {
+      return `${cleanAnswer} Check`;
+    }
+  }
+
+  const possibleCauses =
+    report.possibleCauses ||
+    (report.insights?.causes || []).map((cause) => ({ cause }));
+
+  if (Array.isArray(possibleCauses) && possibleCauses.length > 0) {
+    const cause = String(
+      possibleCauses[0]?.cause || possibleCauses[0] || ""
+    ).trim();
+
+    if (cause && !genericTitles.includes(cause)) {
+      return `${cause} Review`;
+    }
+  }
+
+  const urgency = report.urgencyLevel || report.severity || "";
+
+  if (urgency && urgency !== "General") {
+    return `${urgency} Concern Check`;
+  }
+
+  return "Past Health Check";
+}
+
 const Home = () => {
 
   const navigate = useNavigate()
 
   const loadReports = () => {
-    try {
-      return JSON.parse(localStorage.getItem('healthsense_reports')) || []
-    } catch {
-      return []
-    }
+    return getStoredHealthReports()
   }
 
   const [reports, setReports] = useState(loadReports())
@@ -37,23 +123,21 @@ const Home = () => {
 
   }, [])
 
-  const sortedReports = useMemo(() => {
-    return [...reports].sort(
-      (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-    )
-  }, [reports])
+  const sortedReports = useMemo(() => reports, [reports])
 
-  const latestReport = sortedReports[0]
+  const latestReport = reports[0]
+  const latestConfidence = latestReport?.confidenceScore ?? latestReport?.confidence ?? 0
+  const latestCreatedAt = latestReport?.createdAt ?? latestReport?.date ?? null
 
   const cards = [
     {
       title: 'Last Score',
-      value: latestReport ? `${latestReport.confidence}%` : '--',
+      value: latestReport ? `${latestConfidence}%` : '--',
       icon: <ChartNoAxesCombined size={45} className='bg-green-200 p-2 rounded-2xl dark:text-black'/>
     },
     {
       title: 'Last Check',
-      value: latestReport ? new Date(latestReport.createdAt).toLocaleDateString() : '--',
+      value: latestCreatedAt ? new Date(latestCreatedAt).toLocaleDateString() : '--',
       icon: <CalendarDays size={45} className='bg-yellow-200 p-2 rounded-2xl dark:text-black'/>
     },
     {
@@ -64,9 +148,9 @@ const Home = () => {
     {
       title: 'Status',
       value:
-        reports.some(r => r.severity === 'High Concern')
+        reports.some(r => (r.urgencyLevel ?? r.severity ?? 'General') === 'High Concern' || (r.urgencyLevel ?? r.severity ?? 'General') === 'High' || (r.urgencyLevel ?? r.severity ?? 'General') === 'Urgent')
           ? 'High Concern'
-          : reports.some(r => r.severity === 'Moderate Concern')
+          : reports.some(r => (r.urgencyLevel ?? r.severity ?? 'General') === 'Moderate Concern' || (r.urgencyLevel ?? r.severity ?? 'General') === 'Moderate')
           ? 'Moderate'
           : 'Good',
       icon: <TriangleAlert size={45} className='bg-red-200 p-2 rounded-2xl dark:text-black'/>
@@ -206,10 +290,19 @@ const Home = () => {
 
           ) : (
 
-            sortedReports.slice(0, 3).map((report) => (
+            sortedReports.slice(0, 3).map((report) => {
+              const displayTitle = getReportDisplayTitle(report);
+              const confidence = report.confidenceScore ?? report.confidence ?? 0;
+              const urgency = report.urgencyLevel ?? report.severity ?? "General";
+              const primary = report.primaryConcern ?? report.primary ?? "General health concern";
+              const createdAt = report.createdAt ?? report.date ?? null;
+              const responses = Array.isArray(report.responses) ? report.responses : [];
+              const reportKey = report.id ?? createdAt ?? `${displayTitle}-${primary}-${responses.length}`;
+
+              return (
 
               <div
-                key={report.id}
+                key={reportKey}
                 onClick={() => navigate('/reports')}
                 className='bg-[#e9ebe5] rounded-3xl p-3 flex items-center justify-between cursor-pointer dark:bg-[#1E293B] dark:text-gray-300'
               >
@@ -217,17 +310,17 @@ const Home = () => {
                 <div className='flex items-center gap-4'>
 
                   <p className='text-sm font-bold p-3 text-red-500'>
-                    {report.confidence}%
+                    {confidence}%
                   </p>
 
                   <div>
 
                     <h1>
-                      {report.insights?.disease}
+                      {displayTitle}
                     </h1>
 
                     <p className='text-sm text-gray-600'>
-                      {new Date(report.createdAt).toLocaleDateString()}
+                      {createdAt ? new Date(createdAt).toLocaleDateString() : '--'}
                     </p>
 
                   </div>
@@ -237,7 +330,7 @@ const Home = () => {
                 <div className='flex gap-5 items-center'>
 
                   <p className='bg-white px-4 py-1 rounded-xl text-sm dark:bg-gray-700 dark:text-gray-300'>
-                    {report.severity}
+                    {urgency}
                   </p>
 
                   <ChevronRight />
@@ -246,7 +339,8 @@ const Home = () => {
 
               </div>
 
-            ))
+              )
+            })
 
           )}
 
